@@ -122,7 +122,7 @@
     <comment>Application display name</comment>
   </data>
   <data name="AppDescription" xml:space="preserve">
-    <value>FOSS Calculator for Electrical engineers, output is in many bases at once.</value>
+    <value>FOSS Calculator for Electrical engineers, output is in many bases at once. https://github.com/idanre1/ee_calc</value>
     <comment>Application description</comment>
   </data>
   <data name="Shell_Main.Content" xml:space="preserve">

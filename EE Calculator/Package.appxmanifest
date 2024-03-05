@@ -8,15 +8,15 @@
   IgnorableNamespaces="uap mp genTemplate">
 
   <Identity
-    Name="f50c68e4-3736-481e-bff7-091535df55b7"
-    Publisher="CN=iregev"
+    Name="Idanregev.EECalculator"
+    Publisher="CN=9A6DCEFF-2012-4D98-9233-19C6275FACAD"
     Version="1.0.0.0" />
 
-  <mp:PhoneIdentity PhoneProductId="f50c68e4-3736-481e-bff7-091535df55b7" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+  <mp:PhoneIdentity PhoneProductId="b0bcdd7f-4c7e-4f6e-b3b6-323f132bb7e6" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
-    <DisplayName>EE_Calculator</DisplayName>
-    <PublisherDisplayName>iregev</PublisherDisplayName>
+    <DisplayName>EE Calculator</DisplayName>
+    <PublisherDisplayName>Idan regev</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 

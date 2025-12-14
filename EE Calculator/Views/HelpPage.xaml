@@ -7,12 +7,192 @@
     Style="{StaticResource PageStyle}"
     mc:Ignorable="d">
     <Grid x:Name="ContentArea" Margin="{StaticResource MediumLeftRightMargin}">
-        <Grid
-            Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">
-            <!--
-                The SystemControlPageBackgroundChromeLowBrush background represents where you should place your content. 
-                Place your content here.
-            -->
-        </Grid>
+        <ScrollViewer>
+            <StackPanel Spacing="16">
+                <!-- Page Title -->
+                <TextBlock Text="Help &amp; Guide" 
+                           Style="{ThemeResource TitleTextBlockStyle}" 
+                           Margin="{StaticResource MediumTopMargin}"/>
+
+                <!-- Introduction -->
+                <StackPanel>
+                    <TextBlock Text="Getting Started" 
+                               Style="{ThemeResource SubtitleTextBlockStyle}"/>
+                    <TextBlock TextWrapping="Wrap" 
+                               Style="{ThemeResource BodyTextBlockStyle}"
+                               Margin="{StaticResource XSmallTopMargin}">
+                        EE Calculator is a powerful calculator designed for electrical engineering calculations and advanced mathematical operations. 
+                        It uses the mXparser library to evaluate mathematical expressions.
+                    </TextBlock>
+                </StackPanel>
+
+                <!-- Features -->
+                <StackPanel Margin="{StaticResource SmallTopMargin}">
+                    <TextBlock Text="Features" 
+                               Style="{ThemeResource SubtitleTextBlockStyle}"/>
+                    <StackPanel Margin="{StaticResource XSmallTopMargin}">
+                        <TextBlock Text="• Mathematical expression parsing and evaluation" 
+                                   Style="{ThemeResource BodyTextBlockStyle}"/>
+                        <TextBlock Text="• Real-time results in decimal, hexadecimal, and binary formats" 
+                                   Style="{ThemeResource BodyTextBlockStyle}"/>
+                        <TextBlock Text="• Support for complex mathematical functions" 
+                                   Style="{ThemeResource BodyTextBlockStyle}"/>
+                        <TextBlock Text="• Bitwise operations for digital logic calculations" 
+                                   Style="{ThemeResource BodyTextBlockStyle}"/>
+                        <TextBlock Text="• Answer history (Ans)" 
+                                   Style="{ThemeResource BodyTextBlockStyle}"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- How to Use -->
+                <StackPanel Margin="{StaticResource SmallTopMargin}">
+                    <TextBlock Text="How to Use" 
+                               Style="{ThemeResource SubtitleTextBlockStyle}"/>
+                    <TextBlock TextWrapping="Wrap" 
+                               Style="{ThemeResource BodyTextBlockStyle}"
+                               Margin="{StaticResource XSmallTopMargin}">
+                        Simply enter your mathematical expression in the "Math Input" field. The calculator will automatically evaluate 
+                        and display results in three formats:
+                    </TextBlock>
+                    <StackPanel Margin="{StaticResource XSmallTopMargin}">
+                        <TextBlock Text="• Result: Decimal notation" 
+                                   Style="{ThemeResource BodyTextBlockStyle}"/>
+                        <TextBlock Text="• Hex: Hexadecimal representation" 
+                                   Style="{ThemeResource BodyTextBlockStyle}"/>
+                        <TextBlock Text="• Binary: Binary representation" 
+                                   Style="{ThemeResource BodyTextBlockStyle}"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- Basic Operations -->
+                <StackPanel Margin="{StaticResource SmallTopMargin}">
+                    <TextBlock Text="Basic Operations" 
+                               Style="{ThemeResource SubtitleTextBlockStyle}"/>
+                    <StackPanel Margin="{StaticResource XSmallTopMargin}">
+                        <TextBlock Text="• Addition: 5 + 3" 
+                                   FontFamily="Courier New"
+                                   Style="{ThemeResource BodyTextBlockStyle}"/>
+                        <TextBlock Text="• Subtraction: 10 - 4" 
+                                   FontFamily="Courier New"
+                                   Style="{ThemeResource BodyTextBlockStyle}"/>
+                        <TextBlock Text="• Multiplication: 6 * 7" 
+                                   FontFamily="Courier New"
+                                   Style="{ThemeResource BodyTextBlockStyle}"/>
+                        <TextBlock Text="• Division: 20 / 4" 
+                                   FontFamily="Courier New"
+                                   Style="{ThemeResource BodyTextBlockStyle}"/>
+                        <TextBlock Text="• Power: 2 ^ 8" 
+                                   FontFamily="Courier New"
+                                   Style="{ThemeResource BodyTextBlockStyle}"/>
+                        <TextBlock Text="• Modulo: 17 # 5" 
+                                   FontFamily="Courier New"
+                                   Style="{ThemeResource BodyTextBlockStyle}"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- Bitwise Operations -->
+                <StackPanel Margin="{StaticResource SmallTopMargin}">
+                    <TextBlock Text="Bitwise Operations" 
+                               Style="{ThemeResource SubtitleTextBlockStyle}"/>
+                    <TextBlock TextWrapping="Wrap" 
+                               Style="{ThemeResource BodyTextBlockStyle}"
+                               Margin="{StaticResource XSmallTopMargin}">
+                        The calculator supports various bitwise operations useful for digital logic:
+                    </TextBlock>
+                    <StackPanel Margin="{StaticResource XSmallTopMargin}">
+                        <TextBlock Text="• AND: h.FF @&amp; h.0F (bitwise AND)" 
+                                   FontFamily="Courier New"
+                                   Style="{ThemeResource BodyTextBlockStyle}"/>
+                        <TextBlock Text="• OR: h.F0 @| h.0F (bitwise OR)" 
+                                   FontFamily="Courier New"
+                                   Style="{ThemeResource BodyTextBlockStyle}"/>
+                        <TextBlock Text="• XOR: h.FF @^ h.AA (bitwise XOR)" 
+                                   FontFamily="Courier New"
+                                   Style="{ThemeResource BodyTextBlockStyle}"/>
+                        <TextBlock Text="• NOT: ~h.FF (bitwise NOT)" 
+                                   FontFamily="Courier New"
+                                   Style="{ThemeResource BodyTextBlockStyle}"/>
+                        <TextBlock Text="• Left Shift: 1 @&lt;&lt; 8 (shift left)" 
+                                   FontFamily="Courier New"
+                                   Style="{ThemeResource BodyTextBlockStyle}"/>
+                        <TextBlock Text="• Right Shift: 256 @&gt;&gt; 2 (shift right)" 
+                                   FontFamily="Courier New"
+                                   Style="{ThemeResource BodyTextBlockStyle}"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- Functions -->
+                <StackPanel Margin="{StaticResource SmallTopMargin}">
+                    <TextBlock Text="Mathematical Functions" 
+                               Style="{ThemeResource SubtitleTextBlockStyle}"/>
+                    <StackPanel Margin="{StaticResource XSmallTopMargin}">
+                        <TextBlock Text="• Trigonometric: sin(x), cos(x), tan(x)" 
+                                   FontFamily="Courier New"
+                                   Style="{ThemeResource BodyTextBlockStyle}"/>
+                        <TextBlock Text="• Logarithmic: log(x), ln(x), log2(x)" 
+                                   FontFamily="Courier New"
+                                   Style="{ThemeResource BodyTextBlockStyle}"/>
+                        <TextBlock Text="• Square root: sqrt(x)" 
+                                   FontFamily="Courier New"
+                                   Style="{ThemeResource BodyTextBlockStyle}"/>
+                        <TextBlock Text="• Absolute value: abs(x)" 
+                                   FontFamily="Courier New"
+                                   Style="{ThemeResource BodyTextBlockStyle}"/>
+                        <TextBlock Text="• Rounding: floor(x), ceil(x), round(x)" 
+                                   FontFamily="Courier New"
+                                   Style="{ThemeResource BodyTextBlockStyle}"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- Constants -->
+                <StackPanel Margin="{StaticResource SmallTopMargin}">
+                    <TextBlock Text="Constants" 
+                               Style="{ThemeResource SubtitleTextBlockStyle}"/>
+                    <StackPanel Margin="{StaticResource XSmallTopMargin}">
+                        <TextBlock Text="• π (pi): 3.14159..." 
+                                   FontFamily="Courier New"
+                                   Style="{ThemeResource BodyTextBlockStyle}"/>
+                        <TextBlock Text="• e (Euler's number): 2.71828..." 
+                                   FontFamily="Courier New"
+                                   Style="{ThemeResource BodyTextBlockStyle}"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- Number Formats -->
+                <StackPanel Margin="{StaticResource SmallTopMargin}">
+                    <TextBlock Text="Number Formats" 
+                               Style="{ThemeResource SubtitleTextBlockStyle}"/>
+                    <StackPanel Margin="{StaticResource XSmallTopMargin}">
+                        <TextBlock Text="• Hexadecimal: h.FF, h.10" 
+                                   FontFamily="Courier New"
+                                   Style="{ThemeResource BodyTextBlockStyle}"/>
+                        <TextBlock Text="• Binary: b.1010, b.11111111" 
+                                   FontFamily="Courier New"
+                                   Style="{ThemeResource BodyTextBlockStyle}"/>
+                        <TextBlock Text="• Decimal: 255, 16" 
+                                   FontFamily="Courier New"
+                                   Style="{ThemeResource BodyTextBlockStyle}"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- More Information -->
+                <StackPanel Margin="{StaticResource MediumTopMargin}">
+                    <TextBlock Text="More Information" 
+                               Style="{ThemeResource SubtitleTextBlockStyle}"/>
+                    <TextBlock TextWrapping="Wrap" 
+                               Style="{ThemeResource BodyTextBlockStyle}"
+                               Margin="{StaticResource XSmallTopMargin}">
+                        For a complete reference of supported operators, functions, and mathematical expressions, 
+                        visit the mXparser documentation:
+                    </TextBlock>
+                    <HyperlinkButton Content="mXparser - Bitwise Operators Documentation" 
+                                     NavigateUri="https://mathparser.org/mxparser-math-collection/bitwise-operators/"
+                                     Margin="{StaticResource XSmallTopMargin}"/>
+                </StackPanel>
+
+                <!-- Bottom Spacing -->
+                <Border Height="20"/>
+            </StackPanel>
+        </ScrollViewer>
     </Grid>
 </Page>

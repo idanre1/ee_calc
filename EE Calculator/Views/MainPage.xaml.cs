@@ -15,7 +15,7 @@ namespace EE_Calculator.Views
         public MainPage()
         {
             InitializeComponent();
-            MathInput.Document.SetText(Windows.UI.Text.TextSetOptions.None, "1+2\nx=e0\ny=x+1\ny");
+            MathInput.Document.SetText(Windows.UI.Text.TextSetOptions.None, "1+2\nx=e0\nx\ny=x+1\ny\n\nShift Left:\n7@<<2\nBitwiseOr:\nb.100 @| b.001\n\n\nNatural Language calc engine:\nhttps://mathparser.org");
 
             pageEngine = new PageEngine();
         }

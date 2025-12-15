@@ -10,7 +10,7 @@
   <Identity
     Name="Idanregev.EECalculator"
     Publisher="CN=9A6DCEFF-2012-4D98-9233-19C6275FACAD"
-    Version="1.0.0.0" />
+    Version="1.1.0.0" />
 
   <mp:PhoneIdentity PhoneProductId="b0bcdd7f-4c7e-4f6e-b3b6-323f132bb7e6" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 

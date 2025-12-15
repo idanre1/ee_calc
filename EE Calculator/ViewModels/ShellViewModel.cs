@@ -35,6 +35,7 @@ namespace EE_Calculator.ViewModels
         private ICommand _itemInvokedCommand;
         private ICommand _addPageCommand;
         private int _pageCounter = 1;
+        private bool _isAddingPage = false;
 
         public ObservableCollection<DynamicPageItem> DynamicPages { get; } = new ObservableCollection<DynamicPageItem>();
 
@@ -81,23 +82,45 @@ namespace EE_Calculator.ViewModels
 
         private void AddNewPage()
         {
-            var newPage = new DynamicPageItem
+            // Prevent double-clicks or duplicate invocations
+            if (_isAddingPage)
             {
-                Id = Guid.NewGuid(),
-                Title = $"Calculator {_pageCounter}",
-                PageType = typeof(CalculatorPage),
-                IsClosable = true
-            };
-            
-            DynamicPages.Add(newPage);
-            _pageCounter++;
-            
-            // Navigate to the new page
-            NavigationService.Navigate(typeof(CalculatorPage), newPage.Id);
+                System.Diagnostics.Debug.WriteLine("AddNewPage: Already adding a page, skipping");
+                return;
+            }
+
+            _isAddingPage = true;
+            System.Diagnostics.Debug.WriteLine($"AddNewPage: Creating Calculator {_pageCounter}");
+
+            try
+            {
+                var newPage = new DynamicPageItem
+                {
+                    Id = Guid.NewGuid(),
+                    Title = $"Calculator {_pageCounter}",
+                    PageType = typeof(CalculatorPage),
+                    IsClosable = true
+                };
+
+                System.Diagnostics.Debug.WriteLine($"AddNewPage: Adding page to collection - {newPage.Title} ({newPage.Id})");
+                DynamicPages.Add(newPage);
+                _pageCounter++;
+
+                // Navigate to the new page
+                System.Diagnostics.Debug.WriteLine($"AddNewPage: Navigating to {newPage.Title}");
+                NavigationService.Navigate(typeof(CalculatorPage), newPage.Id);
+            }
+            finally
+            {
+                _isAddingPage = false;
+                System.Diagnostics.Debug.WriteLine("AddNewPage: Finished");
+            }
         }
 
         private void OnItemInvoked(WinUI.NavigationViewItemInvokedEventArgs args)
         {
+            System.Diagnostics.Debug.WriteLine($"OnItemInvoked: Called");
+            
             if (args.IsSettingsInvoked)
             {
                 NavigationService.Navigate(typeof(SettingsPage), null, args.RecommendedNavigationTransitionInfo);
@@ -105,10 +128,12 @@ namespace EE_Calculator.ViewModels
             else
             {
                 var selectedItem = args.InvokedItemContainer as WinUI.NavigationViewItem;
+                System.Diagnostics.Debug.WriteLine($"OnItemInvoked: Item tag = {selectedItem?.Tag}");
                 
                 // Check if this is the add page button
                 if (selectedItem?.Tag?.ToString() == "AddPage")
                 {
+                    System.Diagnostics.Debug.WriteLine("OnItemInvoked: Add page button clicked");
                     AddNewPage();
                     return;
                 }

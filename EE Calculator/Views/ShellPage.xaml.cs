@@ -10,6 +10,7 @@ namespace EE_Calculator.Views
     public sealed partial class ShellPage : Page
     {
         public ShellViewModel ViewModel { get; } = new ShellViewModel();
+        private bool _isProcessingCollectionChange = false;
 
         public ShellPage()
         {
@@ -23,65 +24,86 @@ namespace EE_Calculator.Views
 
         private void DynamicPages_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (e.Action == NotifyCollectionChangedAction.Add)
+            if (_isProcessingCollectionChange)
             {
-                foreach (var item in e.NewItems)
+                System.Diagnostics.Debug.WriteLine("DynamicPages_CollectionChanged: Already processing, skipping");
+                return;
+            }
+
+            _isProcessingCollectionChange = true;
+            System.Diagnostics.Debug.WriteLine($"DynamicPages_CollectionChanged: Action = {e.Action}");
+            
+            try
+            {
+                if (e.Action == NotifyCollectionChangedAction.Add)
                 {
-                    if (item is EE_Calculator.Models.DynamicPageItem page)
+                    foreach (var item in e.NewItems)
                     {
-                        var navItem = new WinUI.NavigationViewItem
+                        if (item is EE_Calculator.Models.DynamicPageItem page)
                         {
-                            Content = page.Title,
-                            Tag = page.Id,
-                            Icon = new SymbolIcon(Symbol.Calculator)
-                        };
-                        
-                        // Find the "Add Calculator Page" button and insert before it
-                        int addButtonIndex = -1;
-                        for (int i = 0; i < navigationView.MenuItems.Count; i++)
-                        {
-                            if (navigationView.MenuItems[i] is WinUI.NavigationViewItem item2 && 
-                                item2.Tag?.ToString() == "AddPage")
+                            System.Diagnostics.Debug.WriteLine($"DynamicPages_CollectionChanged: Adding UI item for {page.Title}");
+                            
+                            var navItem = new WinUI.NavigationViewItem
                             {
-                                addButtonIndex = i;
-                                break;
+                                Content = page.Title,
+                                Tag = page.Id,
+                                Icon = new SymbolIcon(Symbol.Calculator)
+                            };
+                            
+                            // Find the "Add Calculator Page" button and insert before it
+                            int addButtonIndex = -1;
+                            for (int i = 0; i < navigationView.MenuItems.Count; i++)
+                            {
+                                if (navigationView.MenuItems[i] is WinUI.NavigationViewItem item2 && 
+                                    item2.Tag?.ToString() == "AddPage")
+                                {
+                                    addButtonIndex = i;
+                                    break;
+                                }
+                            }
+                            
+                            if (addButtonIndex >= 0)
+                            {
+                                navigationView.MenuItems.Insert(addButtonIndex, navItem);
+                                System.Diagnostics.Debug.WriteLine($"DynamicPages_CollectionChanged: Inserted at index {addButtonIndex}");
+                            }
+                            else
+                            {
+                                navigationView.MenuItems.Add(navItem);
+                                System.Diagnostics.Debug.WriteLine($"DynamicPages_CollectionChanged: Added to end");
                             }
                         }
-                        
-                        if (addButtonIndex >= 0)
+                    }
+                }
+                else if (e.Action == NotifyCollectionChangedAction.Remove)
+                {
+                    foreach (var item in e.OldItems)
+                    {
+                        if (item is EE_Calculator.Models.DynamicPageItem page)
                         {
-                            navigationView.MenuItems.Insert(addButtonIndex, navItem);
-                        }
-                        else
-                        {
-                            navigationView.MenuItems.Add(navItem);
+                            // Remove the corresponding navigation item
+                            WinUI.NavigationViewItem itemToRemove = null;
+                            foreach (var navItem in navigationView.MenuItems)
+                            {
+                                if (navItem is WinUI.NavigationViewItem nvi && nvi.Tag is Guid id && id == page.Id)
+                                {
+                                    itemToRemove = nvi;
+                                    break;
+                                }
+                            }
+                            
+                            if (itemToRemove != null)
+                            {
+                                navigationView.MenuItems.Remove(itemToRemove);
+                            }
                         }
                     }
                 }
             }
-            else if (e.Action == NotifyCollectionChangedAction.Remove)
+            finally
             {
-                foreach (var item in e.OldItems)
-                {
-                    if (item is EE_Calculator.Models.DynamicPageItem page)
-                    {
-                        // Remove the corresponding navigation item
-                        WinUI.NavigationViewItem itemToRemove = null;
-                        foreach (var navItem in navigationView.MenuItems)
-                        {
-                            if (navItem is WinUI.NavigationViewItem nvi && nvi.Tag is Guid id && id == page.Id)
-                            {
-                                itemToRemove = nvi;
-                                break;
-                            }
-                        }
-                        
-                        if (itemToRemove != null)
-                        {
-                            navigationView.MenuItems.Remove(itemToRemove);
-                        }
-                    }
-                }
+                _isProcessingCollectionChange = false;
+                System.Diagnostics.Debug.WriteLine("DynamicPages_CollectionChanged: Finished");
             }
         }
     }

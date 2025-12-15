@@ -1,15 +1,18 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+
+using EE_Calculator.Helpers;
 using EE_Calculator.Models;
-using EE_Calculator.Controls;
+
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
+
 using WinUI = Microsoft.UI.Xaml.Controls;
 
 namespace EE_Calculator.ViewModels
 {
-    public class MainViewModel : ObservableObject
+    public class SavedCalcsViewModel : ObservableObject
     {
         private RelayCommand _addTabCommand;
         private RelayCommand<WinUI.TabViewTabCloseRequestedEventArgs> _closeTabCommand;
@@ -18,24 +21,41 @@ namespace EE_Calculator.ViewModels
 
         public RelayCommand<WinUI.TabViewTabCloseRequestedEventArgs> CloseTabCommand => _closeTabCommand ?? (_closeTabCommand = new RelayCommand<WinUI.TabViewTabCloseRequestedEventArgs>(CloseTab));
 
-        public ObservableCollection<TabViewItemData> Tabs { get; } = new ObservableCollection<TabViewItemData>();
-
-        public MainViewModel()
+        public ObservableCollection<TabViewItemData> Tabs { get; } = new ObservableCollection<TabViewItemData>()
         {
-            // Add initial tab
-            AddTab();
+            new TabViewItemData()
+            {
+                Index = 1,
+                Header = "Item 1",
+                //// In this sample the content shown in the Tab is a string, set the content to the model you want to show
+                Content = "This is the content for Item 1."
+            },
+            new TabViewItemData()
+            {
+                Index = 2,
+                Header = "Item 2",
+                Content = "This is the content for Item 2."
+            },
+            new TabViewItemData()
+            {
+                Index = 3,
+                Header = "Item 3",
+                Content = "This is the content for Item 3."
+            }
+        };
+
+        public SavedCalcsViewModel()
+        {
         }
 
         private void AddTab()
         {
             int newIndex = Tabs.Any() ? Tabs.Max(t => t.Index) + 1 : 1;
-            
-            // Show example text on every new tab
             Tabs.Add(new TabViewItemData()
             {
                 Index = newIndex,
-                Header = $"Calculator {newIndex}",
-                Content = new CalculatorControl(showExampleText: true)
+                Header = $"Item {newIndex}",
+                Content = $"This is the content for Item {newIndex}"
             });
         }
 
@@ -43,13 +63,8 @@ namespace EE_Calculator.ViewModels
         {
             if (args.Item is TabViewItemData item)
             {
-                // Keep at least one tab open
-                if (Tabs.Count > 1)
-                {
-                    Tabs.Remove(item);
-                }
+                Tabs.Remove(item);
             }
         }
     }
 }
-

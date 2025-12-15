@@ -4,38 +4,38 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:winui="using:Microsoft.UI.Xaml.Controls"
+    xmlns:models="using:EE_Calculator.Models"
+    xmlns:controls="using:EE_Calculator.Controls"
+    xmlns:ic="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:i="using:Microsoft.Xaml.Interactivity"
     Style="{StaticResource PageStyle}"
     mc:Ignorable="d">
     <Grid x:Name="ContentArea">
-        <Grid
-            Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="10*"/>
-                <ColumnDefinition Width="3*"/>
-                <ColumnDefinition Width="3*"/>
-                <ColumnDefinition Width="8*"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="22"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="10"/>
-            </Grid.RowDefinitions>
-            <!--
-                The SystemControlPageBackgroundChromeLowBrush background represents where you should place your content. 
-                Place your content here.
-            -->
-            <TextBlock FontSize="16" Grid.Column="0" Grid.Row="0" Text="Ans"/>
-            <TextBlock x:Name="AnswersOutput" FontFamily="Courier New" FontSize="16" Grid.Column="0" Grid.Row="1" Margin="0,5,0,0"/>
-            <TextBlock FontSize="16" Grid.Column="1" Grid.Row="0" Margin="{StaticResource MediumLeftRightMargin}" Text="Math Input"/>
-            <RichEditBox x:Name="MathInput" FontFamily="Courier New" Margin="{StaticResource SmallLeftRightMargin}" Grid.Column="1"  Grid.Row="1" FontSize="16" TextChanged="MathInputChanged" TextWrapping="NoWrap" IsSpellCheckEnabled="False" GotFocus="MathInputFocus"/>
-            <TextBlock FontSize="16" Grid.Column="2" Grid.Row="0" Margin="{StaticResource SmallLeftRightMargin}" Text="Result"/>
-            <RichEditBox x:Name="DoubleOutput" FontFamily="Courier New" FontSize="16" Grid.Column="2" Grid.Row="1" TextWrapping="NoWrap"/>
-            <TextBlock FontSize="16" Grid.Column="3" Grid.Row="0" Margin="{StaticResource SmallLeftRightMargin}" Text="Hex"/>
-            <RichEditBox x:Name="HexOutput" FontFamily="Courier New" FontSize="16" Grid.Column="3" Grid.Row="1" TextWrapping="NoWrap"/>
-            <TextBlock FontSize="16" Grid.Column="4" Grid.Row="0" Margin="{StaticResource SmallLeftRightMargin}" Text="Binary"/>
-            <RichEditBox x:Name="BinOutput" FontFamily="Courier New" FontSize="16" Grid.Column="4" Grid.Row="1" TextWrapping="NoWrap"/>
-            <TextBlock x:Name="Buttom" FontFamily="Courier New" FontSize="16" Grid.ColumnSpan="4" Grid.Row="2" TextWrapping="NoWrap"/>
-        </Grid>
+        <winui:TabView
+            AllowDropTabs="True"
+            CanReorderTabs="True"
+            CanDragTabs="True"
+            TabItemsSource="{x:Bind ViewModel.Tabs}"
+            AddTabButtonCommand="{x:Bind ViewModel.AddTabCommand}">
+            <i:Interaction.Behaviors>
+                <ic:EventTriggerBehavior EventName="TabCloseRequested">
+                    <ic:InvokeCommandAction Command="{x:Bind ViewModel.CloseTabCommand}" />
+                </ic:EventTriggerBehavior>
+            </i:Interaction.Behaviors>
+            <winui:TabView.TabItemTemplate>
+                <DataTemplate x:DataType="models:TabViewItemData">
+                    <winui:TabViewItem
+                        Header="{x:Bind Header}"
+                        AutomationProperties.Name="{x:Bind Header}"
+                        IsClosable="True">
+                        <winui:TabViewItem.Content>
+                            <ContentPresenter Content="{x:Bind Content}" />
+                        </winui:TabViewItem.Content>
+                    </winui:TabViewItem>
+                </DataTemplate>
+            </winui:TabView.TabItemTemplate>
+        </winui:TabView>
     </Grid>
 </Page>
+

@@ -34,8 +34,13 @@
             Edit String/en-US/Resources.resw: Add a menu item title for each page
             -->
             <winui:NavigationViewItem x:Uid="Shell_Main" Icon="Document" helpers:NavHelper.NavigateTo="views:MainPage" />
-            <winui:NavigationViewItem x:Uid="Shell_Help" Icon="Help" helpers:NavHelper.NavigateTo="views:HelpPage" />
+            <!--
+            <winui:NavigationViewItem x:Uid="Shell_SavedCalcs" Icon="Document" helpers:NavHelper.NavigateTo="views:SavedCalcsPage" />
+            -->
         </winui:NavigationView.MenuItems>
+        <winui:NavigationView.FooterMenuItems>
+            <winui:NavigationViewItem x:Uid="Shell_Help" Icon="Help" helpers:NavHelper.NavigateTo="views:HelpPage" />
+        </winui:NavigationView.FooterMenuItems>
         <i:Interaction.Behaviors>
             <behaviors:NavigationViewHeaderBehavior
                 DefaultHeader="{x:Bind ViewModel.Selected.Content, Mode=OneWay}">

@@ -169,4 +169,8 @@
     <value>Help</value>
     <comment>Navigation view item name for Help</comment>
   </data>
+  <data name="Shell_SavedCalcs.Content" xml:space="preserve">
+    <value>SavedCalcs</value>
+    <comment>Navigation view item name for SavedCalcs</comment>
+  </data>
 </root>

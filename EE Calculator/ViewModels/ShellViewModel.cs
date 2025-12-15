@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
 using EE_Calculator.Helpers;
+using EE_Calculator.Models;
 using EE_Calculator.Services;
 using EE_Calculator.Views;
 
@@ -31,6 +33,10 @@ namespace EE_Calculator.ViewModels
         private WinUI.NavigationViewItem _selected;
         private ICommand _loadedCommand;
         private ICommand _itemInvokedCommand;
+        private ICommand _addPageCommand;
+        private int _pageCounter = 1;
+
+        public ObservableCollection<DynamicPageItem> DynamicPages { get; } = new ObservableCollection<DynamicPageItem>();
 
         public bool IsBackEnabled
         {
@@ -47,6 +53,8 @@ namespace EE_Calculator.ViewModels
         public ICommand LoadedCommand => _loadedCommand ?? (_loadedCommand = new RelayCommand(OnLoaded));
 
         public ICommand ItemInvokedCommand => _itemInvokedCommand ?? (_itemInvokedCommand = new RelayCommand<WinUI.NavigationViewItemInvokedEventArgs>(OnItemInvoked));
+
+        public ICommand AddPageCommand => _addPageCommand ?? (_addPageCommand = new RelayCommand(AddNewPage));
 
         public ShellViewModel()
         {
@@ -71,6 +79,23 @@ namespace EE_Calculator.ViewModels
             await Task.CompletedTask;
         }
 
+        private void AddNewPage()
+        {
+            var newPage = new DynamicPageItem
+            {
+                Id = Guid.NewGuid(),
+                Title = $"Calculator {_pageCounter}",
+                PageType = typeof(CalculatorPage),
+                IsClosable = true
+            };
+            
+            DynamicPages.Add(newPage);
+            _pageCounter++;
+            
+            // Navigate to the new page
+            NavigationService.Navigate(typeof(CalculatorPage), newPage.Id);
+        }
+
         private void OnItemInvoked(WinUI.NavigationViewItemInvokedEventArgs args)
         {
             if (args.IsSettingsInvoked)
@@ -80,6 +105,25 @@ namespace EE_Calculator.ViewModels
             else
             {
                 var selectedItem = args.InvokedItemContainer as WinUI.NavigationViewItem;
+                
+                // Check if this is the add page button
+                if (selectedItem?.Tag?.ToString() == "AddPage")
+                {
+                    AddNewPage();
+                    return;
+                }
+
+                // Check if this is a dynamic page
+                if (selectedItem?.Tag is Guid pageId)
+                {
+                    var dynamicPage = DynamicPages.FirstOrDefault(p => p.Id == pageId);
+                    if (dynamicPage != null)
+                    {
+                        NavigationService.Navigate(dynamicPage.PageType, pageId, args.RecommendedNavigationTransitionInfo);
+                        return;
+                    }
+                }
+
                 var pageType = selectedItem?.GetValue(NavHelper.NavigateToProperty) as Type;
 
                 if (pageType != null)
@@ -108,11 +152,34 @@ namespace EE_Calculator.ViewModels
                 return;
             }
 
+            // Check if navigating to a dynamic page
+            if (e.SourcePageType == typeof(CalculatorPage) && e.Parameter is Guid pageId)
+            {
+                var dynamicMenuItem = GetDynamicMenuItem(pageId);
+                if (dynamicMenuItem != null)
+                {
+                    Selected = dynamicMenuItem;
+                    return;
+                }
+            }
+
             var selectedItem = GetSelectedItem(_navigationView.MenuItems, e.SourcePageType);
             if (selectedItem != null)
             {
                 Selected = selectedItem;
             }
+        }
+
+        private WinUI.NavigationViewItem GetDynamicMenuItem(Guid pageId)
+        {
+            foreach (var item in _navigationView.MenuItems.OfType<WinUI.NavigationViewItem>())
+            {
+                if (item.Tag is Guid id && id == pageId)
+                {
+                    return item;
+                }
+            }
+            return null;
         }
 
         private WinUI.NavigationViewItem GetSelectedItem(IEnumerable<object> menuItems, Type pageType)

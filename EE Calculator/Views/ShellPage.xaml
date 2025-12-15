@@ -34,6 +34,18 @@
             Edit String/en-US/Resources.resw: Add a menu item title for each page
             -->
             <winui:NavigationViewItem x:Uid="Shell_Main" Icon="Document" helpers:NavHelper.NavigateTo="views:MainPage" />
+            
+            <!-- Dynamic Calculator Pages -->
+            <winui:NavigationViewItemSeparator />
+            <winui:NavigationViewItemHeader Content="Calculator Pages" />
+            
+            <!-- Add Page Button -->
+            <winui:NavigationViewItem Content="Add Calculator Page" Tag="AddPage">
+                <winui:NavigationViewItem.Icon>
+                    <FontIcon Glyph="&#xE710;" />
+                </winui:NavigationViewItem.Icon>
+            </winui:NavigationViewItem>
+            
             <!--
             <winui:NavigationViewItem x:Uid="Shell_SavedCalcs" Icon="Document" helpers:NavHelper.NavigateTo="views:SavedCalcsPage" />
             -->

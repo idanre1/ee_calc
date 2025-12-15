@@ -136,6 +136,35 @@ namespace EE_Calculator.ViewModels
             }
         }
 
+        public string GetPageTitle(Guid pageId)
+        {
+            var page = DynamicPages.FirstOrDefault(p => p.Id == pageId);
+            return page?.Title;
+        }
+
+        public void RenamePage(Guid pageId, string newTitle)
+        {
+            if (string.IsNullOrWhiteSpace(newTitle))
+            {
+                return;
+            }
+
+            var page = DynamicPages.FirstOrDefault(p => p.Id == pageId);
+            if (page == null)
+            {
+                return;
+            }
+
+            page.Title = newTitle;
+
+            // Update corresponding navigation item header
+            var navItem = GetDynamicMenuItem(pageId);
+            if (navItem != null)
+            {
+                navItem.Content = newTitle;
+            }
+        }
+
         private void OnItemInvoked(WinUI.NavigationViewItemInvokedEventArgs args)
         {
             System.Diagnostics.Debug.WriteLine($"OnItemInvoked: Called");

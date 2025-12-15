@@ -59,5 +59,14 @@ namespace EE_Calculator.Views
             var shellPage = Window.Current.Content as ShellPage;
             shellPage?.ViewModel.ClosePage(_pageId);
         }
+
+        private void PageTitleTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            var shellPage = Window.Current.Content as ShellPage;
+            if (shellPage != null)
+            {
+                shellPage.ViewModel.RenamePage(_pageId, PageTitleTextBox.Text);
+            }
+        }
     }
 }

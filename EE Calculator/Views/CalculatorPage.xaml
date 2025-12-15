@@ -12,7 +12,28 @@
     Style="{StaticResource PageStyle}"
     mc:Ignorable="d">
     <Grid x:Name="ContentArea">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Page title editor -->
+        <StackPanel
+            Orientation="Horizontal"
+            Padding="12,8,12,4"
+            Spacing="8">
+            <TextBlock
+                Text="Page name:"
+                VerticalAlignment="Center" />
+            <TextBox
+                x:Name="PageTitleTextBox"
+                Width="220"
+                VerticalAlignment="Center"
+                TextChanged="PageTitleTextBox_TextChanged" />
+        </StackPanel>
+
         <winui:TabView
+            Grid.Row="1"
             AllowDropTabs="True"
             CanReorderTabs="True"
             CanDragTabs="True"

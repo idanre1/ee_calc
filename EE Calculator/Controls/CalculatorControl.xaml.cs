@@ -43,6 +43,20 @@ namespace EE_Calculator.Controls
             }
         }
 
+        public string GetInputText()
+        {
+            string value;
+            MathInput.Document.GetText(Windows.UI.Text.TextGetOptions.AdjustCrlf, out value);
+            return value;
+        }
+
+        public void SetInputText(string text)
+        {
+            MathInput.Document.SetText(Windows.UI.Text.TextSetOptions.None, text ?? string.Empty);
+            // Trigger recalculation after setting text
+            MathInputChanged(MathInput, null);
+        }
+
         private void MathInputFocus(object sender, RoutedEventArgs e)
         {
             if (_isPor)

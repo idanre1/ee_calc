@@ -13,8 +13,12 @@ namespace EE_Calculator.ViewModels
     {
         private RelayCommand _addTabCommand;
         private RelayCommand<WinUI.TabViewTabCloseRequestedEventArgs> _closeTabCommand;
+        private object _selectedTab;
 
         public event EventHandler LastTabClosed;
+        
+        // Flag to indicate if this is the main page (shouldn't close when last tab closes)
+        public bool IsMainPage { get; set; } = false;
 
         public RelayCommand AddTabCommand => _addTabCommand ?? (_addTabCommand = new RelayCommand(AddTab));
 
@@ -22,40 +26,113 @@ namespace EE_Calculator.ViewModels
 
         public ObservableCollection<TabViewItemData> Tabs { get; } = new ObservableCollection<TabViewItemData>();
 
+        public object SelectedTab
+        {
+            get => _selectedTab;
+            set => SetProperty(ref _selectedTab, value);
+        }
+
         public MainViewModel()
         {
-            // Add initial tab
-            AddTab();
+            // Constructor - tabs will be added by InitializeWithDefaultTab or RestoreFromTabData
+        }
+
+        public void InitializeWithDefaultTab()
+        {
+            if (Tabs.Count == 0)
+            {
+                AddTab();
+            }
+        }
+
+        public void RestoreFromTabData(System.Collections.Generic.IEnumerable<TabData> tabDataList)
+        {
+            System.Diagnostics.Debug.WriteLine($"MainViewModel.RestoreFromTabData: Restoring {tabDataList?.Count() ?? 0} tabs");
+            
+            // Clear existing tabs
+            Tabs.Clear();
+
+            if (tabDataList != null && tabDataList.Any())
+            {
+                foreach (var tabData in tabDataList)
+                {
+                    var calculator = new CalculatorControl(showExampleText: false);
+                    
+                    var newTab = new TabViewItemData()
+                    {
+                        Index = tabData.Index,
+                        Header = tabData.Header,
+                        Content = calculator
+                    };
+
+                    Tabs.Add(newTab);
+                    
+                    // Set the input text after adding to collection
+                    calculator.SetInputText(tabData.MathInputText);
+                }
+
+                // Select the first tab
+                if (Tabs.Count > 0)
+                {
+                    SelectedTab = Tabs[0];
+                }
+
+                System.Diagnostics.Debug.WriteLine($"MainViewModel.RestoreFromTabData: Restored {Tabs.Count} tabs");
+            }
+            else
+            {
+                // No saved data, add default tab
+                AddTab();
+            }
         }
 
         private void AddTab()
         {
             int newIndex = Tabs.Any() ? Tabs.Max(t => t.Index) + 1 : 1;
             
+            System.Diagnostics.Debug.WriteLine($"AddTab: Creating tab {newIndex}");
+            
             // Show example text on every new tab
-            Tabs.Add(new TabViewItemData()
+            var newTab = new TabViewItemData()
             {
                 Index = newIndex,
                 Header = $"Calculator {newIndex}",
                 Content = new CalculatorControl(showExampleText: true)
-            });
+            };
+            
+            Tabs.Add(newTab);
+            System.Diagnostics.Debug.WriteLine($"AddTab: Tab added. Total tabs: {Tabs.Count}");
+            
+            // Automatically select the newly created tab
+            SelectedTab = newTab;
+            System.Diagnostics.Debug.WriteLine($"AddTab: Selected tab set to {newTab.Header}");
         }
 
         private void CloseTab(WinUI.TabViewTabCloseRequestedEventArgs args)
         {
             if (args.Item is TabViewItemData item)
             {
-                if (Tabs.Count > 1)
+                // If this is the main page, keep at least one tab open
+                if (IsMainPage && Tabs.Count <= 1)
                 {
-                    Tabs.Remove(item);
+                    System.Diagnostics.Debug.WriteLine("CloseTab: Cannot close last tab on main page");
+                    return;
                 }
-                else if (Tabs.Count == 1)
+
+                // If this is a dynamic page and it's the last tab, notify to close the page
+                if (!IsMainPage && Tabs.Count == 1)
                 {
-                    // Removing the last tab: close the entire page
+                    System.Diagnostics.Debug.WriteLine("CloseTab: Last tab closing on dynamic page, triggering page close");
                     Tabs.Remove(item);
                     LastTabClosed?.Invoke(this, EventArgs.Empty);
+                }
+                else
+                {
+                    Tabs.Remove(item);
+                    System.Diagnostics.Debug.WriteLine($"CloseTab: Tab removed. Remaining tabs: {Tabs.Count}");
                 }
             }
         }
     }
 }
+

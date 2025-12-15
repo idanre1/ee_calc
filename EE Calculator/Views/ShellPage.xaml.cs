@@ -20,6 +20,44 @@ namespace EE_Calculator.Views
             
             // Subscribe to dynamic pages collection changes
             ViewModel.DynamicPages.CollectionChanged += DynamicPages_CollectionChanged;
+
+            // Load session asynchronously
+            _ = InitializeAsync();
+
+            // Save session when app is suspending
+            Windows.UI.Xaml.Application.Current.Suspending += OnAppSuspending;
+            Windows.UI.Xaml.Application.Current.EnteredBackground += OnAppEnteredBackground;
+        }
+
+        private async System.Threading.Tasks.Task InitializeAsync()
+        {
+            await ViewModel.InitializeAsync();
+        }
+
+        private async void OnAppSuspending(object sender, Windows.ApplicationModel.SuspendingEventArgs e)
+        {
+            var deferral = e.SuspendingOperation.GetDeferral();
+            try
+            {
+                await ViewModel.SaveSessionAsync();
+            }
+            finally
+            {
+                deferral.Complete();
+            }
+        }
+
+        private async void OnAppEnteredBackground(object sender, Windows.ApplicationModel.EnteredBackgroundEventArgs e)
+        {
+            var deferral = e.GetDeferral();
+            try
+            {
+                await ViewModel.SaveSessionAsync();
+            }
+            finally
+            {
+                deferral.Complete();
+            }
         }
 
         private void DynamicPages_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)

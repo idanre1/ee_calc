@@ -156,10 +156,12 @@
     <Compile Include="MathEngine\MathFormatter.cs" />
     <Compile Include="MathEngine\PageEngine.cs" />
     <Compile Include="Models\DynamicPageItem.cs" />
+    <Compile Include="Models\SessionData.cs" />
     <Compile Include="Models\TabViewItemData.cs" />
     <Compile Include="Services\ActivationService.cs" />
     <Compile Include="Activation\DefaultActivationHandler.cs" />
     <Compile Include="Services\NavigationService.cs" />
+    <Compile Include="Services\SessionPersistenceService.cs" />
     <Compile Include="Services\SuspendAndResumeArgs.cs" />
     <Compile Include="Services\SuspendAndResumeService.cs" />
     <Compile Include="Services\SuspensionState.cs" />

@@ -11,10 +11,17 @@ namespace EE_Calculator.Views
         public MainPage()
         {
             InitializeComponent();
+            DataContext = ViewModel;
+            ViewModel.IsMainPage = true;
             // Enable navigation cache so the page instance is preserved when navigating away
             NavigationCacheMode = NavigationCacheMode.Enabled;
+            
+            // Always start with one default tab
+            ViewModel.InitializeWithDefaultTab();
         }
     }
 }
+
+
 
 

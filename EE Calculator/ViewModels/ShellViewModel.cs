@@ -14,6 +14,7 @@ using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
 
 using Windows.System;
+using Windows.Storage;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Navigation;
@@ -60,6 +61,61 @@ namespace EE_Calculator.ViewModels
 
         public ShellViewModel()
         {
+        }
+
+        public async Task InitializeAsync()
+        {
+            System.Diagnostics.Debug.WriteLine("ShellViewModel.InitializeAsync: Loading session...");
+            
+            var sessionData = await Services.SessionPersistenceService.LoadSessionAsync();
+            
+            if (sessionData != null)
+            {
+                // Restore page counter
+                _pageCounter = sessionData.PageCounter;
+
+                // Restore dynamic pages
+                foreach (var pageData in sessionData.DynamicPages)
+                {
+                    System.Diagnostics.Debug.WriteLine($"ShellViewModel.InitializeAsync: Restoring page '{pageData.Title}'");
+                    
+                    var newPage = new DynamicPageItem
+                    {
+                        Id = pageData.Id,
+                        Title = pageData.Title,
+                        PageType = typeof(CalculatorPage),
+                        IsClosable = true
+                    };
+
+                    DynamicPages.Add(newPage);
+
+                    // Create and cache the ViewModel with restored tabs
+                    var viewModel = Views.CalculatorPage.GetOrCreateViewModel(pageData.Id);
+                    viewModel.IsMainPage = false;
+                    viewModel.RestoreFromTabData(pageData.Tabs);
+                }
+
+                System.Diagnostics.Debug.WriteLine($"ShellViewModel.InitializeAsync: Restored {sessionData.DynamicPages.Count} dynamic pages");
+            }
+        }
+
+        public async Task SaveSessionAsync()
+        {
+            System.Diagnostics.Debug.WriteLine("ShellViewModel.SaveSessionAsync: Saving session...");
+            
+            // Get main page ViewModel (assuming it's cached or we need to navigate to it)
+            MainViewModel mainPageViewModel = null;
+            
+            // Try to get the main page from current navigation
+            if (NavigationService.Frame?.Content is MainPage mainPage)
+            {
+                mainPageViewModel = mainPage.ViewModel;
+            }
+
+            await Services.SessionPersistenceService.SaveSessionAsync(
+                mainPageViewModel?.Tabs,
+                DynamicPages,
+                _pageCounter);
         }
 
         public void Initialize(Frame frame, WinUI.NavigationView navigationView, IList<KeyboardAccelerator> keyboardAccelerators)

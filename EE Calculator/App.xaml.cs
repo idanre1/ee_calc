@@ -2,9 +2,12 @@
 
 using EE_Calculator.Core.Helpers;
 using EE_Calculator.Services;
+using EE_Calculator.Helpers;
+using EE_Calculator.Models;
 
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
+using Windows.Storage;
 using Windows.UI.Xaml;
 
 namespace EE_Calculator
@@ -62,8 +65,24 @@ namespace EE_Calculator
         private async void App_EnteredBackground(object sender, EnteredBackgroundEventArgs e)
         {
             var deferral = e.GetDeferral();
-            await Singleton<SuspendAndResumeService>.Instance.SaveStateAsync();
-            deferral.Complete();
+
+            try
+            {
+                // Existing suspend-and-resume state
+                await Singleton<SuspendAndResumeService>.Instance.SaveStateAsync();
+
+                // Save session (dynamic pages + tabs + content) using the new service
+                // Note: ShellPage also handles this, but we do it here as well for safety
+                var shellPage = Window.Current.Content as Views.ShellPage;
+                if (shellPage != null)
+                {
+                    await shellPage.ViewModel.SaveSessionAsync();
+                }
+            }
+            finally
+            {
+                deferral.Complete();
+            }
         }
 
         private void App_Resuming(object sender, object e)

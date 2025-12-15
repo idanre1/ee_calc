@@ -11,6 +11,37 @@ namespace EE_Calculator.Views
     {
         // Static dictionary to store ViewModels per page ID
         private static Dictionary<Guid, MainViewModel> _viewModelCache = new Dictionary<Guid, MainViewModel>();
+
+        internal static MainViewModel TryGetViewModel(Guid pageId)
+        {
+            _viewModelCache.TryGetValue(pageId, out var vm);
+            return vm;
+        }
+
+        internal static MainViewModel GetOrCreateViewModel(Guid pageId)
+        {
+            if (!_viewModelCache.TryGetValue(pageId, out var vm))
+            {
+                vm = new MainViewModel();
+                _viewModelCache[pageId] = vm;
+            }
+            return vm;
+        }
+
+        public static MainViewModel GetCachedViewModel(Guid pageId)
+        {
+            _viewModelCache.TryGetValue(pageId, out var viewModel);
+            return viewModel;
+        }
+
+        public static void RemoveFromCache(Guid pageId)
+        {
+            if (_viewModelCache.ContainsKey(pageId))
+            {
+                _viewModelCache.Remove(pageId);
+                System.Diagnostics.Debug.WriteLine($"CalculatorPage.RemoveFromCache: Removed page {pageId} from cache");
+            }
+        }
         
         public MainViewModel ViewModel { get; private set; }
         private Guid _pageId;
@@ -26,23 +57,52 @@ namespace EE_Calculator.Views
         {
             base.OnNavigatedTo(e);
             
+            System.Diagnostics.Debug.WriteLine($"CalculatorPage.OnNavigatedTo: Called");
+            
             // Get the page ID from navigation parameter
             if (e.Parameter is Guid pageId)
             {
                 _pageId = pageId;
+                System.Diagnostics.Debug.WriteLine($"CalculatorPage.OnNavigatedTo: Page ID = {pageId}");
                 
                 // Try to get existing ViewModel for this page ID, or create a new one
+                bool isNewViewModel = false;
                 if (!_viewModelCache.TryGetValue(pageId, out var viewModel))
                 {
+                    System.Diagnostics.Debug.WriteLine($"CalculatorPage.OnNavigatedTo: Creating new ViewModel for page {pageId}");
                     viewModel = new MainViewModel();
+                    viewModel.IsMainPage = false; // This is NOT the main page
                     _viewModelCache[pageId] = viewModel;
+                    isNewViewModel = true;
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine($"CalculatorPage.OnNavigatedTo: Using cached ViewModel for page {pageId}");
                 }
                 
                 ViewModel = viewModel;
+                DataContext = ViewModel;
                 ViewModel.LastTabClosed += ViewModel_LastTabClosed;
                 
                 // Update the binding
                 Bindings.Update();
+
+                // If this is a new ViewModel and it has no tabs, create the first tab automatically
+                if (isNewViewModel && ViewModel.Tabs.Count == 0)
+                {
+                    System.Diagnostics.Debug.WriteLine($"CalculatorPage.OnNavigatedTo: Initializing with default tab");
+                    ViewModel.InitializeWithDefaultTab();
+                }
+
+                // Initialize page title TextBox from ShellViewModel
+                var shellPage = Window.Current.Content as ShellPage;
+                var title = shellPage?.ViewModel.GetPageTitle(_pageId);
+                if (!string.IsNullOrEmpty(title))
+                {
+                    PageTitleTextBox.Text = title;
+                }
+
+                System.Diagnostics.Debug.WriteLine($"CalculatorPage.OnNavigatedTo: ViewModel tabs count = {ViewModel.Tabs.Count}");
             }
         }
 

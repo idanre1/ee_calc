@@ -37,7 +37,8 @@
             AllowDropTabs="True"
             CanReorderTabs="True"
             CanDragTabs="True"
-            TabItemsSource="{x:Bind ViewModel.Tabs}"
+            TabItemsSource="{x:Bind ViewModel.Tabs, Mode=OneWay}"
+            SelectedItem="{Binding SelectedTab, Mode=TwoWay}"
             AddTabButtonCommand="{x:Bind ViewModel.AddTabCommand}">
             <i:Interaction.Behaviors>
                 <ic:EventTriggerBehavior EventName="TabCloseRequested">

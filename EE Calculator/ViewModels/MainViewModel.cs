@@ -14,6 +14,8 @@ namespace EE_Calculator.ViewModels
         private RelayCommand _addTabCommand;
         private RelayCommand<WinUI.TabViewTabCloseRequestedEventArgs> _closeTabCommand;
 
+        public event EventHandler LastTabClosed;
+
         public RelayCommand AddTabCommand => _addTabCommand ?? (_addTabCommand = new RelayCommand(AddTab));
 
         public RelayCommand<WinUI.TabViewTabCloseRequestedEventArgs> CloseTabCommand => _closeTabCommand ?? (_closeTabCommand = new RelayCommand<WinUI.TabViewTabCloseRequestedEventArgs>(CloseTab));
@@ -43,13 +45,17 @@ namespace EE_Calculator.ViewModels
         {
             if (args.Item is TabViewItemData item)
             {
-                // Keep at least one tab open
                 if (Tabs.Count > 1)
                 {
                     Tabs.Remove(item);
+                }
+                else if (Tabs.Count == 1)
+                {
+                    // Removing the last tab: close the entire page
+                    Tabs.Remove(item);
+                    LastTabClosed?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
     }
 }
-

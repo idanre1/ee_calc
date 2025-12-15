@@ -36,6 +36,7 @@ namespace EE_Calculator.ViewModels
         private ICommand _addPageCommand;
         private int _pageCounter = 1;
         private bool _isAddingPage = false;
+        private Guid? _currentPageId;
 
         public ObservableCollection<DynamicPageItem> DynamicPages { get; } = new ObservableCollection<DynamicPageItem>();
 
@@ -117,6 +118,24 @@ namespace EE_Calculator.ViewModels
             }
         }
 
+        public void ClosePage(Guid pageId)
+        {
+            var page = DynamicPages.FirstOrDefault(p => p.Id == pageId);
+            if (page != null)
+            {
+                DynamicPages.Remove(page);
+            }
+
+            // If this page is currently displayed, navigate away
+            if (_currentPageId.HasValue && _currentPageId.Value == pageId)
+            {
+                if (!NavigationService.GoBack())
+                {
+                    NavigationService.Navigate(typeof(MainPage));
+                }
+            }
+        }
+
         private void OnItemInvoked(WinUI.NavigationViewItemInvokedEventArgs args)
         {
             System.Diagnostics.Debug.WriteLine($"OnItemInvoked: Called");
@@ -171,6 +190,8 @@ namespace EE_Calculator.ViewModels
         private void Frame_Navigated(object sender, NavigationEventArgs e)
         {
             IsBackEnabled = NavigationService.CanGoBack;
+            _currentPageId = null;
+
             if (e.SourcePageType == typeof(SettingsPage))
             {
                 Selected = _navigationView.SettingsItem as WinUI.NavigationViewItem;
@@ -180,6 +201,8 @@ namespace EE_Calculator.ViewModels
             // Check if navigating to a dynamic page
             if (e.SourcePageType == typeof(CalculatorPage) && e.Parameter is Guid pageId)
             {
+                _currentPageId = pageId;
+
                 var dynamicMenuItem = GetDynamicMenuItem(pageId);
                 if (dynamicMenuItem != null)
                 {

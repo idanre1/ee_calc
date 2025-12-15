@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
+using Windows.UI.Xaml;
 
 namespace EE_Calculator.Views
 {
@@ -38,12 +39,25 @@ namespace EE_Calculator.Views
                 }
                 
                 ViewModel = viewModel;
+                ViewModel.LastTabClosed += ViewModel_LastTabClosed;
                 
                 // Update the binding
                 Bindings.Update();
             }
         }
+
+        private void ViewModel_LastTabClosed(object sender, EventArgs e)
+        {
+            // Unsubscribe from the event to avoid multiple calls
+            ViewModel.LastTabClosed -= ViewModel_LastTabClosed;
+
+            if (_viewModelCache.ContainsKey(_pageId))
+            {
+                _viewModelCache.Remove(_pageId);
+            }
+
+            var shellPage = Window.Current.Content as ShellPage;
+            shellPage?.ViewModel.ClosePage(_pageId);
+        }
     }
 }
-
-

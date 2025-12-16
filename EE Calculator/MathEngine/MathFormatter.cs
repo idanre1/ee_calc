@@ -1,4 +1,5 @@
 using System;
+using System.Numerics;
 
 namespace EE_Calculator.MathEngine
 {
@@ -12,8 +13,14 @@ namespace EE_Calculator.MathEngine
                 return "----";
             }
 
-            // Insert _ every 4 characters
-            string in_str = ((int)input).ToString("X");
+            // Use BigInteger for larger-than-32-bit hex representation.
+            var bi = new BigInteger(input);
+            if (bi.Sign < 0)
+            {
+                bi = BigInteger.Abs(bi);
+            }
+
+            string in_str = bi.ToString("X");
             string output = "";
             char s; int j;
             for (int i = 0; i< in_str.Length; i++)
@@ -41,9 +48,36 @@ namespace EE_Calculator.MathEngine
                 return "----";
             }
 
-            // Insert _ every 4 characters
-            // convert input to binary string
-            string in_str = Convert.ToString((int)input, 2);
+            // Use BigInteger for larger-than-32-bit binary representation.
+            var bi = new BigInteger(input);
+            if (bi.Sign < 0)
+            {
+                bi = BigInteger.Abs(bi);
+            }
+
+            // BigInteger.ToString does not support a radix parameter, so we
+            // rely on Convert.ToString on the magnitude represented as an
+            // unsigned 64-bit value when within range, and fall back to a
+            // manual base-2 conversion for larger values.
+
+            string in_str;
+            if (bi.IsZero)
+            {
+                in_str = "0";
+            }
+            else
+            {
+                // Convert the absolute value to binary using repeated division.
+                var temp = bi;
+                var bits = new System.Text.StringBuilder();
+                while (temp > BigInteger.Zero)
+                {
+                    BigInteger rem;
+                    temp = BigInteger.DivRem(temp, 2, out rem);
+                    bits.Insert(0, rem.IsZero ? '0' : '1');
+                }
+                in_str = bits.ToString();
+            }
             string output = "";
             char s; int j;
             for (int i = 0; i < in_str.Length; i++)

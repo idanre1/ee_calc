@@ -7,23 +7,18 @@
     xmlns:winui="using:Microsoft.UI.Xaml.Controls"
     xmlns:models="using:EE_Calculator.Models"
     xmlns:controls="using:EE_Calculator.Controls"
-    xmlns:ic="using:Microsoft.Xaml.Interactions.Core"
-    xmlns:i="using:Microsoft.Xaml.Interactivity"
     Style="{StaticResource PageStyle}"
     mc:Ignorable="d">
     <Grid x:Name="ContentArea">
         <winui:TabView
+            x:Name="TabView"
             AllowDropTabs="True"
             CanReorderTabs="True"
             CanDragTabs="True"
             TabItemsSource="{x:Bind ViewModel.Tabs, Mode=OneWay}"
             SelectedItem="{Binding SelectedTab, Mode=TwoWay}"
-            AddTabButtonCommand="{x:Bind ViewModel.AddTabCommand}">
-            <i:Interaction.Behaviors>
-                <ic:EventTriggerBehavior EventName="TabCloseRequested">
-                    <ic:InvokeCommandAction Command="{x:Bind ViewModel.CloseTabCommand}" />
-                </ic:EventTriggerBehavior>
-            </i:Interaction.Behaviors>
+            AddTabButtonCommand="{x:Bind ViewModel.AddTabCommand}"
+            TabCloseRequested="TabView_TabCloseRequested">
             <winui:TabView.TabItemTemplate>
                 <DataTemplate x:DataType="models:TabViewItemData">
                     <winui:TabViewItem

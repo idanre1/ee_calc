@@ -17,7 +17,7 @@ namespace EE_Calculator.Views
             InitializeComponent();
             DataContext = ViewModel;
             ViewModel.Initialize(shellFrame, navigationView, KeyboardAccelerators);
-            
+
             // Subscribe to dynamic pages collection changes
             ViewModel.DynamicPages.CollectionChanged += DynamicPages_CollectionChanged;
 
@@ -27,6 +27,10 @@ namespace EE_Calculator.Views
             // Save session when app is suspending
             Windows.UI.Xaml.Application.Current.Suspending += OnAppSuspending;
             Windows.UI.Xaml.Application.Current.EnteredBackground += OnAppEnteredBackground;
+
+            // Navigate to the default page (MainPage) on shell creation
+            // so that navigationView.Selection and shellFrame content are in sync
+            Services.NavigationService.Navigate(typeof(MainPage));
         }
 
         private async System.Threading.Tasks.Task InitializeAsync()
@@ -70,7 +74,7 @@ namespace EE_Calculator.Views
 
             _isProcessingCollectionChange = true;
             System.Diagnostics.Debug.WriteLine($"DynamicPages_CollectionChanged: Action = {e.Action}");
-            
+
             try
             {
                 if (e.Action == NotifyCollectionChangedAction.Add)
@@ -80,26 +84,26 @@ namespace EE_Calculator.Views
                         if (item is EE_Calculator.Models.DynamicPageItem page)
                         {
                             System.Diagnostics.Debug.WriteLine($"DynamicPages_CollectionChanged: Adding UI item for {page.Title}");
-                            
+
                             var navItem = new WinUI.NavigationViewItem
                             {
                                 Content = page.Title,
                                 Tag = page.Id,
                                 Icon = new SymbolIcon(Symbol.Calculator)
                             };
-                            
+
                             // Find the "Add Calculator Page" button and insert before it
                             int addButtonIndex = -1;
                             for (int i = 0; i < navigationView.MenuItems.Count; i++)
                             {
-                                if (navigationView.MenuItems[i] is WinUI.NavigationViewItem item2 && 
+                                if (navigationView.MenuItems[i] is WinUI.NavigationViewItem item2 &&
                                     item2.Tag?.ToString() == "AddPage")
                                 {
                                     addButtonIndex = i;
                                     break;
                                 }
                             }
-                            
+
                             if (addButtonIndex >= 0)
                             {
                                 navigationView.MenuItems.Insert(addButtonIndex, navItem);
@@ -108,7 +112,7 @@ namespace EE_Calculator.Views
                             else
                             {
                                 navigationView.MenuItems.Add(navItem);
-                                System.Diagnostics.Debug.WriteLine($"DynamicPages_CollectionChanged: Added to end");
+                                System.Diagnostics.Debug.WriteLine("DynamicPages_CollectionChanged: Added to end");
                             }
                         }
                     }
@@ -129,7 +133,7 @@ namespace EE_Calculator.Views
                                     break;
                                 }
                             }
-                            
+
                             if (itemToRemove != null)
                             {
                                 navigationView.MenuItems.Remove(itemToRemove);
@@ -143,6 +147,17 @@ namespace EE_Calculator.Views
                 _isProcessingCollectionChange = false;
                 System.Diagnostics.Debug.WriteLine("DynamicPages_CollectionChanged: Finished");
             }
+        }
+
+        private void NavigationView_ItemInvoked(object sender, WinUI.NavigationViewItemInvokedEventArgs e)
+        {
+            // forward the event to the ViewModel so existing logic in ShellViewModel.OnItemInvoked is used
+            ViewModel?.ItemInvokedCommand?.Execute(e);
+        }
+
+        private void Page_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        {
+            ViewModel?.LoadedCommand?.Execute(null);
         }
     }
 }

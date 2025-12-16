@@ -19,6 +19,11 @@ namespace EE_Calculator.Views
             // Always start with one default tab
             ViewModel.InitializeWithDefaultTab();
         }
+
+        private void TabView_TabCloseRequested(Microsoft.UI.Xaml.Controls.TabView sender, Microsoft.UI.Xaml.Controls.TabViewTabCloseRequestedEventArgs args)
+        {
+            ViewModel?.CloseTabCommand?.Execute(args);
+        }
     }
 }
 

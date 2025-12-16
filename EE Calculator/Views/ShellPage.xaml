@@ -8,24 +8,19 @@
     xmlns:winui="using:Microsoft.UI.Xaml.Controls"
     xmlns:helpers="using:EE_Calculator.Helpers"
     xmlns:views="using:EE_Calculator.Views"
-    xmlns:ic="using:Microsoft.Xaml.Interactions.Core"
     xmlns:i="using:Microsoft.Xaml.Interactivity"
-    mc:Ignorable="d">
-
-    <i:Interaction.Behaviors>
-        <ic:EventTriggerBehavior EventName="Loaded">
-            <ic:InvokeCommandAction Command="{x:Bind ViewModel.LoadedCommand}" />
-        </ic:EventTriggerBehavior>
-    </i:Interaction.Behaviors>
+    mc:Ignorable="d"
+    Loaded="Page_Loaded">
 
     <winui:NavigationView
         x:Name="navigationView"
         IsBackButtonVisible="Visible"
         IsBackEnabled="{x:Bind ViewModel.IsBackEnabled, Mode=OneWay}"
-        SelectedItem="{x:Bind ViewModel.Selected, Mode=OneWay}"
+        SelectedItem="{x:Bind ViewModel.Selected, Mode=TwoWay}"
         IsSettingsVisible="True"
         PaneDisplayMode="LeftCompact"
-        Background="{ThemeResource SystemControlBackgroundAltHighBrush}">
+        Background="{ThemeResource SystemControlBackgroundAltHighBrush}"
+        ItemInvoked="NavigationView_ItemInvoked">
         <winui:NavigationView.MenuItems>
             <!--
             TODO: Change the symbols for each item as appropriate for your app
@@ -67,9 +62,6 @@
                     </DataTemplate>
                 </behaviors:NavigationViewHeaderBehavior.DefaultHeaderTemplate>
             </behaviors:NavigationViewHeaderBehavior>
-            <ic:EventTriggerBehavior EventName="ItemInvoked">
-                <ic:InvokeCommandAction Command="{x:Bind ViewModel.ItemInvokedCommand}" />
-            </ic:EventTriggerBehavior>
         </i:Interaction.Behaviors>
         <Grid>
             <Frame x:Name="shellFrame" />

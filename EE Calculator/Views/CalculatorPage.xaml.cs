@@ -84,6 +84,9 @@ namespace EE_Calculator.Views
                 DataContext = ViewModel;
                 ViewModel.LastTabClosed += ViewModel_LastTabClosed;
                 
+                // Recreate UI controls for all tabs to avoid visual tree conflicts
+                ViewModel.RecreateTabControls();
+                
                 // Update the binding
                 Bindings.Update();
 
@@ -127,6 +130,11 @@ namespace EE_Calculator.Views
             {
                 shellPage.ViewModel.RenamePage(_pageId, PageTitleTextBox.Text);
             }
+        }
+
+        private void TabView_TabCloseRequested(Microsoft.UI.Xaml.Controls.TabView sender, Microsoft.UI.Xaml.Controls.TabViewTabCloseRequestedEventArgs args)
+        {
+            ViewModel?.CloseTabCommand?.Execute(args);
         }
     }
 }

@@ -17,5 +17,10 @@ namespace EE_Calculator.Views
         {
             InitializeComponent();
         }
+
+        private void TabView_TabCloseRequested(Microsoft.UI.Xaml.Controls.TabView sender, Microsoft.UI.Xaml.Controls.TabViewTabCloseRequestedEventArgs args)
+        {
+            ViewModel?.CloseTabCommand?.Execute(args);
+        }
     }
 }

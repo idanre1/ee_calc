@@ -64,6 +64,21 @@
 
                 <HyperlinkButton x:Uid="Settings_PrivacyTermsLink" Margin="{StaticResource XSmallTopMargin}" />
             </StackPanel>
+
+            <TextBlock
+                Margin="{StaticResource MediumTopMargin}"
+                Text="Session"
+                Style="{ThemeResource SubtitleTextBlockStyle}" />
+
+            <StackPanel Margin="{StaticResource XSmallTopMargin}">
+                <TextBlock
+                    Text="Clear all saved calculators and tabs on all pages."
+                    Style="{ThemeResource BodyTextBlockStyle}" />
+                <Button
+                    Margin="{StaticResource XSmallTopMargin}"
+                    Content="Clear saved calculators"
+                    Click="ClearSessionButton_Click" />
+            </StackPanel>
         </StackPanel>
     </Grid>    
 </Page>

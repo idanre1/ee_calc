@@ -86,6 +86,33 @@ namespace EE_Calculator.ViewModels
             }
         }
 
+        public void RecreateTabControls()
+        {
+            System.Diagnostics.Debug.WriteLine($"MainViewModel.RecreateTabControls: Recreating UI controls for {Tabs.Count} tabs");
+            
+            // For each tab, get the current content (CalculatorControl), extract its data, and create a new control
+            for (int i = 0; i < Tabs.Count; i++)
+            {
+                var tab = Tabs[i];
+                
+                // Only recreate if the content is a CalculatorControl
+                if (tab.Content is CalculatorControl existingControl)
+                {
+                    // Get the current input text
+                    string currentText = existingControl.GetInputText();
+                    
+                    // Create a new CalculatorControl with the same content
+                    var newControl = new CalculatorControl(showExampleText: false);
+                    newControl.SetInputText(currentText);
+                    
+                    // Replace the content
+                    tab.Content = newControl;
+                    
+                    System.Diagnostics.Debug.WriteLine($"MainViewModel.RecreateTabControls: Recreated control for tab {tab.Index}");
+                }
+            }
+        }
+
         private void AddTab()
         {
             int newIndex = Tabs.Any() ? Tabs.Max(t => t.Index) + 1 : 1;

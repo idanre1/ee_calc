@@ -6,21 +6,16 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:winui="using:Microsoft.UI.Xaml.Controls"
     xmlns:models="using:EE_Calculator.Models"
-    xmlns:ic="using:Microsoft.Xaml.Interactions.Core"
-    xmlns:i="using:Microsoft.Xaml.Interactivity"
     xmlns:system="using:System"
     Style="{StaticResource PageStyle}"
     mc:Ignorable="d">
 
     <winui:TabView
+        x:Name="TabView"
         AllowDropTabs="True"
         TabItemsSource="{x:Bind ViewModel.Tabs}"
-        AddTabButtonCommand="{x:Bind ViewModel.AddTabCommand}">
-        <i:Interaction.Behaviors>
-            <ic:EventTriggerBehavior EventName="TabCloseRequested">
-                <ic:InvokeCommandAction Command="{x:Bind ViewModel.CloseTabCommand}" />
-            </ic:EventTriggerBehavior>
-        </i:Interaction.Behaviors>
+        AddTabButtonCommand="{x:Bind ViewModel.AddTabCommand}"
+        TabCloseRequested="TabView_TabCloseRequested">
         <winui:TabView.TabItemTemplate>
             <DataTemplate x:DataType="models:TabViewItemData">
                 <winui:TabViewItem

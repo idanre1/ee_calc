@@ -9,6 +9,9 @@ namespace EE_Calculator.Controls
         private PageEngine pageEngine;
         private bool _isPor = false;
 
+        // Public constant used for the initial welcome/example text shown on new tabs
+        public const string InitialWelcomeText = "1+2\nx=e0\nx\ny=x+1\ny\n\nShift Left:\n7@<<2\nBitwiseOr:\nb.100 @| b.001\n\n\nNatural Language calc engine:\nhttps://mathparser.org";
+
         public CalculatorControl() : this(false)
         {
         }
@@ -21,7 +24,7 @@ namespace EE_Calculator.Controls
             if (showExampleText)
             {
                 _isPor = true;
-                MathInput.Document.SetText(Windows.UI.Text.TextSetOptions.None, "1+2\nx=e0\nx\ny=x+1\ny\n\nShift Left:\n7@<<2\nBitwiseOr:\nb.100 @| b.001\n\n\nNatural Language calc engine:\nhttps://mathparser.org");
+                MathInput.Document.SetText(Windows.UI.Text.TextSetOptions.None, InitialWelcomeText);
             }
         }
 

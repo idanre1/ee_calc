@@ -67,7 +67,7 @@
 
             <TextBlock
                 Margin="{StaticResource MediumTopMargin}"
-                Text="Calculators &amp; session"
+                Text="Calculators and session"
                 Style="{ThemeResource SubtitleTextBlockStyle}" />
 
             <StackPanel Margin="{StaticResource XSmallTopMargin}">
@@ -79,6 +79,22 @@
                     Margin="{StaticResource XSmallTopMargin}"
                     Content="Clear saved calculator pages"
                     Click="ClearSessionButton_Click" />
+            </StackPanel>
+
+            <TextBlock
+                Margin="{StaticResource MediumTopMargin}"
+                Text="Import / Export calculators"
+                Style="{ThemeResource SubtitleTextBlockStyle}" />
+
+            <StackPanel Margin="{StaticResource XSmallTopMargin}">
+                <TextBlock
+                    Text="Export or import all dynamic calculator pages (and their tabs) to a file."
+                    TextWrapping="WrapWholeWords"
+                    Style="{ThemeResource BodyTextBlockStyle}" />
+                <StackPanel Orientation="Horizontal" Spacing="8" Margin="{StaticResource XSmallTopMargin}">
+                    <Button Content="Export calculators" Click="ExportCalculatorsButton_Click" />
+                    <Button Content="Import calculators" Click="ImportCalculatorsButton_Click" />
+                </StackPanel>
             </StackPanel>
         </StackPanel>
     </Grid>    

@@ -91,9 +91,9 @@ namespace EE_Calculator.Views
                 DataContext = ViewModel;
                 ViewModel.LastTabClosed += ViewModel_LastTabClosed;
                 
-                // Recreate UI controls for all tabs to avoid visual tree conflicts
-                ViewModel.RecreateTabControls();
-                
+                // Do not recreate controls here; keep existing CalculatorControl instances
+                // so tab content survives navigation between pages.
+
                 // Update the binding
                 Bindings.Update();
 

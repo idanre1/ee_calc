@@ -78,32 +78,51 @@ namespace EE_Calculator.ViewModels
             
             if (sessionData != null)
             {
-                // Restore page counter
-                _pageCounter = sessionData.PageCounter;
-
-                // Restore dynamic pages
-                foreach (var pageData in sessionData.DynamicPages)
-                {
-                    System.Diagnostics.Debug.WriteLine($"ShellViewModel.InitializeAsync: Restoring page '{pageData.Title}'");
-                    
-                    var newPage = new DynamicPageItem
-                    {
-                        Id = pageData.Id,
-                        Title = pageData.Title,
-                        PageType = typeof(CalculatorPage),
-                        IsClosable = true
-                    };
-
-                    DynamicPages.Add(newPage);
-
-                    // Create and cache the ViewModel with restored tabs
-                    var viewModel = Views.CalculatorPage.GetOrCreateViewModel(pageData.Id);
-                    viewModel.IsMainPage = false;
-                    viewModel.RestoreFromTabData(pageData.Tabs);
-                }
-
-                System.Diagnostics.Debug.WriteLine($"ShellViewModel.InitializeAsync: Restored {sessionData.DynamicPages.Count} dynamic pages");
+                InitializeFromSession(sessionData);
             }
+        }
+
+        // Initialize dynamic pages and viewmodels from persisted SessionData
+        public void InitializeFromSession(SessionData sessionData)
+        {
+            if (sessionData == null)
+            {
+                return;
+            }
+
+            System.Diagnostics.Debug.WriteLine("ShellViewModel.InitializeFromSession: Applying session data");
+
+            // Restore page counter
+            _pageCounter = sessionData.PageCounter;
+
+            // Clear current dynamic pages so old calculators are removed
+            DynamicPages.Clear();
+
+            // Also clear any cached CalculatorPage viewmodels so we start clean
+            EE_Calculator.Views.CalculatorPage.ClearAllCachedViewModels();
+
+            // Restore dynamic pages from session
+            foreach (var pageData in sessionData.DynamicPages)
+            {
+                System.Diagnostics.Debug.WriteLine($"ShellViewModel.InitializeFromSession: Restoring page '{pageData.Title}'");
+
+                var newPage = new DynamicPageItem
+                {
+                    Id = pageData.Id,
+                    Title = pageData.Title,
+                    PageType = typeof(CalculatorPage),
+                    IsClosable = true
+                };
+
+                DynamicPages.Add(newPage);
+
+                // Create and cache the ViewModel with restored tabs
+                var viewModel = Views.CalculatorPage.GetOrCreateViewModel(pageData.Id);
+                viewModel.IsMainPage = false;
+                viewModel.RestoreFromTabData(pageData.Tabs);
+            }
+
+            System.Diagnostics.Debug.WriteLine($"ShellViewModel.InitializeFromSession: Restored {sessionData.DynamicPages.Count} dynamic pages");
         }
 
         public async Task SaveSessionAsync()

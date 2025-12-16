@@ -5,13 +5,28 @@ using System.Threading.Tasks;
 using EE_Calculator.Controls;
 using EE_Calculator.Helpers;
 using EE_Calculator.Models;
+using Windows.ApplicationModel.Core;
 using Windows.Storage;
+using Windows.Storage.Pickers;
+using Windows.UI.Xaml;
 
 namespace EE_Calculator.Services
 {
     public static class SessionPersistenceService
     {
         private const string SessionDataKey = "SessionData";
+
+        // Helper to normalize text for comparison (line endings and trailing whitespace)
+        private static string NormalizeText(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+            {
+                return string.Empty;
+            }
+
+            // Normalize CRLF to LF and trim trailing whitespace
+            return text.Replace("\r\n", "\n").Replace("\r", "\n").TrimEnd();
+        }
 
         public static async Task SaveSessionAsync(
             IEnumerable<TabViewItemData> mainPageTabs,
@@ -49,11 +64,13 @@ namespace EE_Calculator.Services
                             {
                                 if (tab.Content is CalculatorControl calc)
                                 {
+                                    var text = calc.GetInputText() ?? string.Empty;
+
                                     pageData.Tabs.Add(new TabData
                                     {
                                         Index = tab.Index,
                                         Header = tab.Header,
-                                        MathInputText = calc.GetInputText()
+                                        MathInputText = text
                                     });
                                 }
                             }
@@ -109,7 +126,7 @@ namespace EE_Calculator.Services
                 ApplicationData.Current.LocalSettings.Values.Remove(SessionDataKey);
 
                 // Also clear in-memory state so current session matches what will be loaded next time
-                var shellPage = Windows.UI.Xaml.Window.Current.Content as EE_Calculator.Views.ShellPage;
+                var shellPage = Window.Current.Content as EE_Calculator.Views.ShellPage;
                 if (shellPage != null)
                 {
                     // Clear dynamic pages collection and reset its page counter
@@ -129,6 +146,145 @@ namespace EE_Calculator.Services
             }
 
             await Task.CompletedTask;
+        }
+
+        // Export only dynamic calculator pages and their tabs to a JSON file selected by the user
+        public static async Task ExportDynamicPagesAsync()
+        {
+            try
+            {
+                // Flush current in-memory state to persistent session first
+                var shellPage = Window.Current.Content as EE_Calculator.Views.ShellPage;
+                if (shellPage != null)
+                {
+                    await shellPage.ViewModel.SaveSessionAsync();
+                }
+
+                var session = await LoadSessionAsync();
+                if (session == null)
+                {
+                    System.Diagnostics.Debug.WriteLine("SessionPersistenceService.ExportDynamicPagesAsync: No session to export");
+                    return;
+                }
+
+                // Clone the session data for export so we can sanitize it
+                var exportData = new SessionData
+                {
+                    PageCounter = session.PageCounter
+                };
+
+                var normalizedWelcome = NormalizeText(CalculatorControl.InitialWelcomeText);
+
+                foreach (var page in session.DynamicPages)
+                {
+                    var pageCopy = new DynamicPageData
+                    {
+                        Id = page.Id,
+                        Title = page.Title
+                    };
+
+                    foreach (var tab in page.Tabs)
+                    {
+                        var text = tab.MathInputText ?? string.Empty;
+
+                        // If this tab still contains the initial welcome/example text (after normalization),
+                        // replace it with an empty string in the exported file.
+                        if (string.Equals(NormalizeText(text), normalizedWelcome, StringComparison.Ordinal))
+                        {
+                            text = string.Empty;
+                        }
+
+                        pageCopy.Tabs.Add(new TabData
+                        {
+                            Index = tab.Index,
+                            Header = tab.Header,
+                            MathInputText = text
+                        });
+                    }
+
+                    exportData.DynamicPages.Add(pageCopy);
+                }
+
+                var picker = new FileSavePicker
+                {
+                    SuggestedStartLocation = PickerLocationId.DocumentsLibrary
+                };
+                picker.FileTypeChoices.Add("EE Calculator session", new List<string> { ".json" });
+                picker.SuggestedFileName = "ee_calculator_session";
+
+#pragma warning disable CS0618
+                StorageFile file = await picker.PickSaveFileAsync();
+#pragma warning restore CS0618
+                if (file == null)
+                {
+                    return;
+                }
+
+                var json = await EE_Calculator.Core.Helpers.Json.StringifyAsync(exportData);
+                await FileIO.WriteTextAsync(file, json);
+
+                System.Diagnostics.Debug.WriteLine($"SessionPersistenceService.ExportDynamicPagesAsync: Exported to {file.Path}");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"SessionPersistenceService.ExportDynamicPagesAsync: Error - {ex.Message}");
+            }
+        }
+
+        // Import dynamic pages and their tabs from a JSON file and persist/apply them as current session
+        public static async Task ImportDynamicPagesAsync()
+        {
+            try
+            {
+                var picker = new FileOpenPicker
+                {
+                    SuggestedStartLocation = PickerLocationId.DocumentsLibrary,
+                    ViewMode = PickerViewMode.List
+                };
+                picker.FileTypeFilter.Add(".json");
+
+#pragma warning disable CS0618
+                var file = await picker.PickSingleFileAsync();
+#pragma warning restore CS0618
+                if (file == null)
+                {
+                    return;
+                }
+
+                var json = await FileIO.ReadTextAsync(file);
+                var imported = await EE_Calculator.Core.Helpers.Json.ToObjectAsync<SessionData>(json);
+                if (imported == null)
+                {
+                    System.Diagnostics.Debug.WriteLine("SessionPersistenceService.ImportDynamicPagesAsync: Failed to deserialize session data");
+                    return;
+                }
+
+                // Persist imported data as the new session
+                await ApplicationData.Current.LocalSettings.SaveAsync(SessionDataKey, imported);
+
+                // Apply imported session to current in-memory state immediately
+                var shellPage = Window.Current.Content as EE_Calculator.Views.ShellPage;
+                if (shellPage != null)
+                {
+                    shellPage.ViewModel.InitializeFromSession(imported);
+                }
+
+                System.Diagnostics.Debug.WriteLine("SessionPersistenceService.ImportDynamicPagesAsync: Import applied to current session, requesting restart");
+
+                // Restart the app so subsequent launches start from the imported session only
+                try
+                {
+                    await CoreApplication.RequestRestartAsync("User imported calculator session.");
+                }
+                catch
+                {
+                    Application.Current.Exit();
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"SessionPersistenceService.ImportDynamicPagesAsync: Error - {ex.Message}");
+            }
         }
     }
 }

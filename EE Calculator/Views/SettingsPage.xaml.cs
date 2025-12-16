@@ -54,5 +54,15 @@ namespace EE_Calculator.Views
                 }
             }
         }
+
+        private async void ExportCalculatorsButton_Click(object sender, RoutedEventArgs e)
+        {
+            await SessionPersistenceService.ExportDynamicPagesAsync();
+        }
+
+        private async void ImportCalculatorsButton_Click(object sender, RoutedEventArgs e)
+        {
+            await SessionPersistenceService.ImportDynamicPagesAsync();
+        }
     }
 }

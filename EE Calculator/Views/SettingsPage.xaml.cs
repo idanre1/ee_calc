@@ -29,9 +29,9 @@ namespace EE_Calculator.Views
         {
             var dialog = new ContentDialog
             {
-                Title = "Clear all calculators?",
-                Content = "This will delete all saved calculator pages and tabs on all pages. This cannot be undone.",
-                PrimaryButtonText = "Delete all",
+                Title = "Delete all saved calculator pages and restart?",
+                Content = "This will delete all dynamic calculator pages and their tabs that are saved on this device. Theme and other app settings will not be changed. The app will restart. This action cannot be undone.",
+                PrimaryButtonText = "Delete pages and restart app",
                 CloseButtonText = "Cancel",
                 DefaultButton = ContentDialogButton.Close
             };
@@ -45,7 +45,7 @@ namespace EE_Calculator.Views
                 // Request app restart after clearing session
                 try
                 {
-                    await CoreApplication.RequestRestartAsync("User cleared all calculators.");
+                    await CoreApplication.RequestRestartAsync("User cleared saved calculator pages.");
                 }
                 catch
                 {

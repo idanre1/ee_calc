@@ -103,13 +103,31 @@ namespace EE_Calculator.Services
         {
             try
             {
+                System.Diagnostics.Debug.WriteLine("SessionPersistenceService: Clearing calculator session data only...");
+
+                // Remove the persisted calculator session blob, keep other app settings (e.g., theme)
                 ApplicationData.Current.LocalSettings.Values.Remove(SessionDataKey);
-                System.Diagnostics.Debug.WriteLine("SessionPersistenceService: Session cleared");
+
+                // Also clear in-memory state so current session matches what will be loaded next time
+                var shellPage = Windows.UI.Xaml.Window.Current.Content as EE_Calculator.Views.ShellPage;
+                if (shellPage != null)
+                {
+                    // Clear dynamic pages collection and reset its page counter
+                    shellPage.ViewModel.DynamicPages.Clear();
+
+                    // Reset the internal page counter so new pages start from 1 again
+                    shellPage.ViewModel.ResetPageCounter();
+                }
+
+                EE_Calculator.Views.CalculatorPage.ClearAllCachedViewModels();
+
+                System.Diagnostics.Debug.WriteLine("SessionPersistenceService: Calculator session data cleared (persisted + in-memory)");
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"SessionPersistenceService: Error clearing session - {ex.Message}");
             }
+
             await Task.CompletedTask;
         }
     }

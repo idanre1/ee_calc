@@ -67,16 +67,17 @@
 
             <TextBlock
                 Margin="{StaticResource MediumTopMargin}"
-                Text="Session"
+                Text="Calculators &amp; session"
                 Style="{ThemeResource SubtitleTextBlockStyle}" />
 
             <StackPanel Margin="{StaticResource XSmallTopMargin}">
                 <TextBlock
-                    Text="Clear all saved calculators and tabs on all pages."
+                    Text="Clear all saved dynamic calculator pages and their tabs. Theme and other app settings are not affected."
+                    TextWrapping="WrapWholeWords"
                     Style="{ThemeResource BodyTextBlockStyle}" />
                 <Button
                     Margin="{StaticResource XSmallTopMargin}"
-                    Content="Clear saved calculators"
+                    Content="Clear saved calculator pages"
                     Click="ClearSessionButton_Click" />
             </StackPanel>
         </StackPanel>

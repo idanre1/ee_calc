@@ -42,6 +42,13 @@ namespace EE_Calculator.Views
                 System.Diagnostics.Debug.WriteLine($"CalculatorPage.RemoveFromCache: Removed page {pageId} from cache");
             }
         }
+
+        // Clear all cached dynamic-page viewmodels (used when clearing saved session)
+        internal static void ClearAllCachedViewModels()
+        {
+            _viewModelCache.Clear();
+            System.Diagnostics.Debug.WriteLine("CalculatorPage.ClearAllCachedViewModels: Cleared all cached dynamic CalculatorPage ViewModels");
+        }
         
         public MainViewModel ViewModel { get; private set; }
         private Guid _pageId;

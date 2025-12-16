@@ -63,6 +63,13 @@ namespace EE_Calculator.ViewModels
         {
         }
 
+        // Allow services (like SessionPersistenceService) to reset the dynamic page counter
+        public void ResetPageCounter()
+        {
+            _pageCounter = 1;
+            System.Diagnostics.Debug.WriteLine("ShellViewModel.ResetPageCounter: Page counter reset to 1");
+        }
+
         public async Task InitializeAsync()
         {
             System.Diagnostics.Debug.WriteLine("ShellViewModel.InitializeAsync: Loading session...");

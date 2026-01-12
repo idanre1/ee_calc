@@ -33,6 +33,8 @@
         <winui:TabView
             x:Name="TabView"
             Grid.Row="1"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
             AllowDropTabs="True"
             CanReorderTabs="True"
             CanDragTabs="True"

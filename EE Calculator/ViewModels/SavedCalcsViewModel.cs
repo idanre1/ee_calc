@@ -5,8 +5,8 @@ using System.Linq;
 using EE_Calculator.Helpers;
 using EE_Calculator.Models;
 
-using Microsoft.Toolkit.Mvvm.ComponentModel;
-using Microsoft.Toolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 
 using WinUI = Microsoft.UI.Xaml.Controls;
 

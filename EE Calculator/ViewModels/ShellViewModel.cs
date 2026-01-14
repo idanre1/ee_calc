@@ -10,8 +10,8 @@ using EE_Calculator.Models;
 using EE_Calculator.Services;
 using EE_Calculator.Views;
 
-using Microsoft.Toolkit.Mvvm.ComponentModel;
-using Microsoft.Toolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 
 using Windows.System;
 using Windows.Storage;

@@ -5,8 +5,8 @@ using System.Windows.Input;
 using EE_Calculator.Helpers;
 using EE_Calculator.Services;
 
-using Microsoft.Toolkit.Mvvm.ComponentModel;
-using Microsoft.Toolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 
 using Windows.ApplicationModel;
 using Windows.UI.Xaml;

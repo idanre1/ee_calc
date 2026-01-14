@@ -12,6 +12,8 @@
     <Grid x:Name="ContentArea">
         <winui:TabView
             x:Name="TabView"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
             AllowDropTabs="True"
             CanReorderTabs="True"
             CanDragTabs="True"

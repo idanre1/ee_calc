@@ -12,9 +12,27 @@
                 <ResourceDictionary Source="/Styles/_FontSizes.xaml" />
                 <ResourceDictionary Source="/Styles/_Thickness.xaml" />
 
+                <ResourceDictionary Source="/Styles/ScrollBar.xaml" />
+
                 <ResourceDictionary Source="/Styles/TextBlock.xaml" />
                 <ResourceDictionary Source="/Styles/Page.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+
+            <!-- App-wide ScrollViewer defaults.
+                 Note: the thin-until-hover behavior is controlled by the platform's
+                 scrollbar visual states (overlay scrollbars). Visibility here ensures
+                 scrollbars are shown when applicable. -->
+            <Style TargetType="ScrollViewer">
+                <Setter Property="HorizontalScrollBarVisibility" Value="Visible" />
+                <Setter Property="HorizontalScrollMode" Value="Enabled" />
+            </Style>
+
+            <!-- App-wide ScrollBar sizing.
+                 Setting Height affects horizontal scrollbars. -->
+            <Style TargetType="ScrollBar">
+                <Setter Property="Height" Value="22" />
+                <Setter Property="MinHeight" Value="22" />
+            </Style>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

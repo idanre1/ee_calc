@@ -15,6 +15,6 @@ Since EE-Calc does not collect any data, there are no personal data rights appli
 This privacy policy may be updated to reflect any future changes in app functionality or applicable legal requirements.
 
 5. Contact
-For questions or concerns regarding this privacy policy, you may contact:
+For questions or concerns regarding this privacy policy, you may contact:  
 Open a ticket: https://github.com/idanre1/ee_calc/issues/new/choose  
 Website: https://https://github.com/idanre1/ee_calc

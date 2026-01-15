@@ -16,5 +16,5 @@ This privacy policy may be updated to reflect any future changes in app function
 
 5. Contact
 For questions or concerns regarding this privacy policy, you may contact:
-Open a ticket: https://github.com/idanre1/ee_calc/issues/new/choose
+Open a ticket: https://github.com/idanre1/ee_calc/issues/new/choose  
 Website: https://https://github.com/idanre1/ee_calc
